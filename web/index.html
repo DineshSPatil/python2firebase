@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+    <head>
+        <script type="text/javascript" src="app.js"></script>
+    </head>
+    <body>
+        <h1 id="bigOne"></h1>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <div id="chart_div" style="width: 400px; height: 120px;"></div>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+            <script>
+            var val;
+            var data;
+            var chart;
+            var options;
+            // Initialize Firebase
+            //google gauge part
+            google.charts.load('current', {'packages':['gauge']});
+            google.charts.setOnLoadCallback(function(){
+                data = google.visualization.arrayToDataTable([
+                ['Label', 'Value'],
+                ['Memory', 80]
+                ]);
+
+                options = {
+                width: 400, height: 120,
+                redFrom: 90, redTo: 100,
+                yellowFrom:75, yellowTo: 90,
+                minorTicks: 5
+                };
+
+                chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+                chart.draw(data, options);
+                initFirebase();
+                
+            });
+
+            function initFirebase(){
+                var config = {
+                apiKey: "AIzaSyD9Dna0UiBb_mwTupiOW14J1pJB2FW_Epc",
+                authDomain: "pythontofirebase-21c9e.firebaseapp.com",
+                databaseURL: "https://pythontofirebase-21c9e.firebaseio.com",
+                projectId: "pythontofirebase-21c9e",
+                storageBucket: "pythontofirebase-21c9e.appspot.com",
+                messagingSenderId: "979736441731"
+            };
+            firebase.initializeApp(config);
+
+            var bigOne = document.getElementById('bigOne');
+            var dbRef = firebase.database().ref().child('Pune/Moisture');
+            dbRef.on('child_added', function(snap, prevChildKey) {
+                var newEntry = snap.val();
+                data.setValue(0, 1, newEntry.value);
+                chart.draw(data, options);
+                bigOne.innerText = newEntry.value;
+
+            });
+            /*var rootDbRef = firebase.database().ref(); 
+            var dbRef = rootDbRef.child('Pune/Moisture');
+            var query = dbRef.orderByChild('sortOn');
+            //dbRef.on('value', snap => bigOne.innerText = snap.val());    
+            //dbRef.on('value', snap => bigOne.innerText = snap.val());
+
+            query.on('child_added', snap => {
+                val = snap.key;
+                //bigOne.innerText = snap.key;
+                var finalVal = dbRef.child(val)[0];
+                    //snap => val = snap.val();
+                //data.setValue(0, 1, value);
+                //chart.draw(data, options);
+            });*/
+            
+                
+            
+            }
+
+            function propogateme(value){
+                    bigOne.innerText = value;
+                    //snap => val = snap.val();
+                    data.setValue(0, 1, value);
+                    chart.draw(data, options);
+            }
+            
+            
+        </script>
+    </body>
+</html>

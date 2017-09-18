@@ -1,0 +1,6 @@
+To setup pyserial:
+
+	F:\tech\pyserial-3.4.tar\dist\pyserial-3.4\pyserial-3.4>python setup.py install
+
+To setup python Requests:
+	F:\tech>python -m pip install requests
